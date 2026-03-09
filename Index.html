@@ -1,0 +1,1447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EZONOTOR TIMES — by Ezekiel Thupetsi Mojela</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root {
+  --neon: #00ff88;
+  --neon2: #00cfff;
+  --red: #ff2244;
+  --gold: #ffd700;
+  --bg: #020b12;
+  --bg2: #040f1a;
+  --panel: rgba(0,255,136,0.05);
+  --border: rgba(0,255,136,0.25);
+  --text: #c8ffe8;
+  --dim: #4a7a5a;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;overflow-x:hidden;cursor:none;}
+
+/* CUSTOM CURSOR */
+#cursor{position:fixed;width:18px;height:18px;border:2px solid var(--neon);border-radius:50%;pointer-events:none;z-index:99999;transition:transform 0.1s;mix-blend-mode:difference;}
+#cursor-trail{position:fixed;width:6px;height:6px;background:var(--neon);border-radius:50%;pointer-events:none;z-index:99998;opacity:0.5;}
+
+/* SCANLINE OVERLAY */
+body::before{content:'';position:fixed;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.08) 2px,rgba(0,0,0,0.08) 4px);pointer-events:none;z-index:9000;animation:scanMove 8s linear infinite;}
+@keyframes scanMove{0%{background-position:0 0;}100%{background-position:0 100px;}}
+
+/* MATRIX RAIN CANVAS */
+#matrix-canvas{position:fixed;top:0;left:0;z-index:0;opacity:0.08;pointer-events:none;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;width:100%;z-index:1000;background:rgba(2,11,18,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;padding:0 30px;height:60px;}
+.nav-logo{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;color:var(--neon);text-shadow:0 0 20px var(--neon);letter-spacing:4px;cursor:pointer;}
+.nav-logo span{color:var(--gold);}
+.nav-links{display:flex;gap:6px;align-items:center;}
+.nav-links a{color:var(--dim);text-decoration:none;font-family:'Share Tech Mono',monospace;font-size:0.75rem;padding:6px 12px;border:1px solid transparent;transition:all 0.3s;letter-spacing:1px;cursor:pointer;}
+.nav-links a:hover,.nav-links a.active{color:var(--neon);border-color:var(--border);background:var(--panel);text-shadow:0 0 8px var(--neon);}
+.nav-auth{display:flex;gap:8px;}
+.btn{padding:8px 20px;font-family:'Share Tech Mono',monospace;font-size:0.75rem;letter-spacing:2px;cursor:pointer;transition:all 0.3s;border:none;text-transform:uppercase;}
+.btn-outline{background:transparent;border:1px solid var(--neon);color:var(--neon);}
+.btn-outline:hover{background:var(--neon);color:var(--bg);box-shadow:0 0 20px var(--neon);}
+.btn-solid{background:var(--neon);color:var(--bg);font-weight:700;}
+.btn-solid:hover{box-shadow:0 0 30px var(--neon);transform:translateY(-1px);}
+.btn-red{background:var(--red);color:#fff;border:1px solid var(--red);}
+.btn-red:hover{box-shadow:0 0 20px var(--red);}
+#user-badge{display:none;align-items:center;gap:10px;font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--neon);}
+#user-badge .avatar{width:32px;height:32px;background:linear-gradient(135deg,var(--neon),var(--neon2));border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--bg);font-size:1rem;}
+
+/* PAGES */
+.page{display:none;min-height:100vh;padding-top:60px;}
+.page.active{display:block;}
+
+/* ====== LANDING PAGE ====== */
+#page-home{position:relative;overflow:hidden;}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 20px;position:relative;z-index:10;}
+.hero-badge{font-family:'Share Tech Mono',monospace;font-size:0.7rem;letter-spacing:4px;color:var(--neon2);border:1px solid var(--neon2);padding:6px 18px;margin-bottom:30px;animation:fadeIn 1s ease;}
+.hero-title{font-family:'Orbitron',monospace;font-size:clamp(2.5rem,8vw,6rem);font-weight:900;line-height:1;margin-bottom:10px;animation:glitch 4s infinite;}
+.hero-title .line1{color:#fff;text-shadow:0 0 40px rgba(255,255,255,0.3);}
+.hero-title .line2{color:var(--neon);text-shadow:0 0 40px var(--neon);}
+@keyframes glitch{0%,95%,100%{transform:translate(0);}96%{transform:translate(-3px,2px);filter:hue-rotate(90deg);}97%{transform:translate(3px,-2px);}}
+.hero-sub{font-family:'Rajdhani',sans-serif;font-size:1.1rem;color:var(--dim);letter-spacing:3px;margin:20px 0 10px;}
+.hero-author{font-family:'Share Tech Mono',monospace;font-size:0.85rem;color:var(--gold);margin-bottom:40px;}
+.hero-author span{color:var(--neon);}
+.hero-btns{display:flex;gap:15px;flex-wrap:wrap;justify-content:center;}
+.hero-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;max-width:700px;margin:60px auto 0;padding:0 20px;}
+.stat-box{border:1px solid var(--border);padding:20px 10px;text-align:center;background:var(--panel);}
+.stat-num{font-family:'Orbitron',monospace;font-size:1.8rem;color:var(--neon);font-weight:900;}
+.stat-lbl{font-size:0.7rem;color:var(--dim);letter-spacing:2px;margin-top:4px;}
+.section{padding:80px 40px;max-width:1200px;margin:0 auto;position:relative;z-index:10;}
+.section-title{font-family:'Orbitron',monospace;font-size:1.5rem;color:var(--neon);letter-spacing:4px;margin-bottom:40px;border-bottom:1px solid var(--border);padding-bottom:15px;}
+.section-title::before{content:'// ';color:var(--dim);}
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px;}
+.card{background:var(--panel);border:1px solid var(--border);padding:25px;transition:all 0.3s;cursor:pointer;position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:2px;background:linear-gradient(90deg,transparent,var(--neon),transparent);transition:left 0.5s;}
+.card:hover::before{left:100%;}
+.card:hover{border-color:var(--neon);box-shadow:0 0 20px rgba(0,255,136,0.1);transform:translateY(-4px);}
+.card-icon{font-size:2rem;margin-bottom:15px;}
+.card-title{font-family:'Orbitron',monospace;font-size:0.9rem;color:var(--neon2);margin-bottom:10px;letter-spacing:2px;}
+.card-text{font-size:0.9rem;color:var(--dim);line-height:1.6;}
+
+/* TICKER */
+.ticker-wrap{background:#000;border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden;padding:8px 0;}
+.ticker{display:flex;animation:tick 30s linear infinite;white-space:nowrap;}
+.ticker-item{font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--neon);padding:0 40px;}
+.ticker-item span{color:var(--gold);}
+@keyframes tick{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}}
+
+/* ====== AUTH PAGES ====== */
+.auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 20px 40px;}
+.auth-box{width:100%;max-width:440px;background:var(--bg2);border:1px solid var(--border);padding:40px;}
+.auth-title{font-family:'Orbitron',monospace;font-size:1.3rem;color:var(--neon);margin-bottom:8px;letter-spacing:3px;}
+.auth-sub{font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--dim);margin-bottom:30px;}
+.form-group{margin-bottom:20px;}
+.form-group label{display:block;font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--neon2);letter-spacing:2px;margin-bottom:8px;}
+.form-group input,.form-group textarea,.form-group select{width:100%;background:rgba(0,0,0,0.4);border:1px solid var(--border);color:var(--text);padding:12px 15px;font-family:'Share Tech Mono',monospace;font-size:0.85rem;outline:none;transition:border-color 0.3s;}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--neon);box-shadow:0 0 10px rgba(0,255,136,0.1);}
+.form-group textarea{resize:vertical;min-height:120px;}
+.strength-bar{height:4px;background:#111;margin-top:8px;border-radius:2px;overflow:hidden;}
+.strength-fill{height:100%;width:0;transition:width 0.3s,background 0.3s;}
+.strength-text{font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--dim);margin-top:4px;}
+.form-error{font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--red);margin-top:5px;}
+.form-link{font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--dim);margin-top:15px;text-align:center;}
+.form-link a{color:var(--neon);cursor:pointer;text-decoration:underline;}
+.captcha-box{background:#000;border:1px solid var(--border);padding:15px;margin-bottom:20px;display:flex;align-items:center;gap:15px;}
+.captcha-box input[type=checkbox]{width:18px;height:18px;accent-color:var(--neon);cursor:pointer;}
+.captcha-box span{font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--dim);}
+
+/* ====== NOTES ====== */
+#page-notes .notes-layout{display:grid;grid-template-columns:280px 1fr;gap:0;min-height:calc(100vh - 60px);}
+.notes-sidebar{background:var(--bg2);border-right:1px solid var(--border);padding:20px;overflow-y:auto;max-height:calc(100vh - 60px);}
+.notes-sidebar h3{font-family:'Orbitron',monospace;font-size:0.8rem;color:var(--neon);letter-spacing:3px;margin-bottom:15px;}
+.note-item{padding:12px;border:1px solid transparent;margin-bottom:8px;cursor:pointer;transition:all 0.2s;background:var(--panel);}
+.note-item:hover,.note-item.active{border-color:var(--neon);background:rgba(0,255,136,0.08);}
+.note-item-title{font-family:'Rajdhani',sans-serif;font-size:0.9rem;font-weight:600;color:var(--text);}
+.note-item-date{font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--dim);margin-top:3px;}
+.notes-editor{padding:30px;display:flex;flex-direction:column;gap:15px;}
+.editor-toolbar{display:flex;gap:8px;flex-wrap:wrap;}
+.editor-toolbar button{background:var(--panel);border:1px solid var(--border);color:var(--text);padding:6px 12px;font-size:0.75rem;cursor:pointer;font-family:'Share Tech Mono',monospace;transition:all 0.2s;}
+.editor-toolbar button:hover{border-color:var(--neon);color:var(--neon);}
+#note-title-input{background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-family:'Orbitron',monospace;font-size:1.4rem;padding:10px 0;outline:none;width:100%;}
+#note-body{background:rgba(0,0,0,0.3);border:1px solid var(--border);color:var(--text);font-family:'Rajdhani',sans-serif;font-size:1rem;padding:20px;outline:none;min-height:300px;line-height:1.7;resize:none;}
+#note-body:focus{border-color:var(--neon);}
+
+/* ====== CYBERSECURITY MENU ====== */
+.cyber-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px;padding:40px;}
+.cyber-card{background:var(--bg2);border:1px solid var(--border);padding:25px;position:relative;overflow:hidden;}
+.cyber-card::after{content:attr(data-label);position:absolute;top:10px;right:10px;font-family:'Share Tech Mono',monospace;font-size:0.6rem;color:var(--red);letter-spacing:2px;border:1px solid var(--red);padding:2px 6px;}
+.cyber-card h3{font-family:'Orbitron',monospace;font-size:0.9rem;color:var(--neon2);letter-spacing:2px;margin-bottom:12px;}
+.cyber-card p{font-size:0.85rem;color:var(--dim);line-height:1.6;margin-bottom:15px;}
+.cyber-card ul{list-style:none;margin-bottom:15px;}
+.cyber-card ul li{font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--text);padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.cyber-card ul li::before{content:'> ';color:var(--neon);}
+.terminal-box{background:#000;border:1px solid var(--neon);padding:15px;font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--neon);line-height:1.8;position:relative;}
+.terminal-box::before{content:'TERMINAL';position:absolute;top:-10px;left:10px;background:#000;padding:0 8px;font-size:0.6rem;letter-spacing:3px;}
+.terminal-cursor{display:inline-block;width:8px;height:12px;background:var(--neon);animation:blink 1s infinite;}
+@keyframes blink{0%,49%{opacity:1;}50%,100%{opacity:0;}}
+.threat-meter{height:8px;background:#111;border-radius:4px;overflow:hidden;margin:10px 0;}
+.threat-fill{height:100%;background:linear-gradient(90deg,var(--neon),var(--gold),var(--red));animation:threatAnim 3s ease-in-out infinite alternate;}
+@keyframes threatAnim{0%{width:60%;}100%{width:85%;}}
+
+/* ====== STORE ====== */
+.store-header{background:var(--bg2);border-bottom:1px solid var(--border);padding:20px 40px;display:flex;align-items:center;justify-content:space-between;}
+.store-title{font-family:'Orbitron',monospace;font-size:1.2rem;color:var(--gold);letter-spacing:4px;}
+.store-tabs{display:flex;gap:0;border:1px solid var(--border);}
+.store-tab{padding:10px 25px;font-family:'Share Tech Mono',monospace;font-size:0.75rem;cursor:pointer;background:transparent;color:var(--dim);border:none;letter-spacing:2px;transition:all 0.2s;}
+.store-tab.active{background:var(--gold);color:#000;font-weight:700;}
+.store-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:25px;padding:40px;}
+.store-item{background:var(--bg2);border:1px solid var(--border);overflow:hidden;transition:all 0.3s;cursor:pointer;}
+.store-item:hover{border-color:var(--gold);transform:translateY(-4px);box-shadow:0 10px 30px rgba(255,215,0,0.1);}
+.store-img{width:100%;height:200px;object-fit:cover;display:block;filter:saturate(0.8) contrast(1.1);}
+.store-img-placeholder{width:100%;height:200px;display:flex;align-items:center;justify-content:center;font-size:4rem;background:linear-gradient(135deg,var(--bg),var(--bg2));}
+.store-info{padding:18px;}
+.store-item-title{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;color:var(--text);margin-bottom:5px;}
+.store-item-by{font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--dim);}
+.store-item-price{font-family:'Orbitron',monospace;font-size:1.1rem;color:var(--gold);margin-top:10px;}
+.store-item-price span{font-size:0.7rem;color:var(--dim);}
+.cart-btn{width:100%;padding:10px;margin-top:10px;font-family:'Share Tech Mono',monospace;font-size:0.72rem;letter-spacing:2px;cursor:pointer;background:transparent;border:1px solid var(--gold);color:var(--gold);transition:all 0.2s;}
+.cart-btn:hover{background:var(--gold);color:#000;}
+.cart-badge{position:relative;}
+.cart-badge-num{position:absolute;top:-8px;right:-8px;background:var(--red);color:#fff;border-radius:50%;width:18px;height:18px;font-size:0.65rem;display:flex;align-items:center;justify-content:center;font-family:'Share Tech Mono',monospace;}
+
+/* ====== MUSIC PLAYER ====== */
+.music-player{position:fixed;bottom:0;left:0;width:100%;background:rgba(2,11,18,0.97);border-top:1px solid var(--border);z-index:2000;padding:10px 30px;}
+.player-inner{display:flex;align-items:center;gap:20px;max-width:1200px;margin:0 auto;}
+.player-art{width:44px;height:44px;background:linear-gradient(135deg,var(--neon),var(--neon2));display:flex;align-items:center;justify-content:center;font-size:1.2rem;border-radius:4px;flex-shrink:0;animation:spin 4s linear infinite paused;}
+.player-art.playing{animation-play-state:running;}
+@keyframes spin{100%{transform:rotate(360deg);}}
+.player-info{flex:1;min-width:0;}
+.player-track{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:0.9rem;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.player-artist{font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--dim);}
+.player-controls{display:flex;align-items:center;gap:12px;}
+.player-btn{background:none;border:none;color:var(--dim);font-size:1.1rem;cursor:pointer;transition:color 0.2s;padding:4px;}
+.player-btn:hover{color:var(--neon);}
+.player-btn.main{color:var(--neon);font-size:1.5rem;}
+.player-progress{flex:2;display:flex;align-items:center;gap:10px;}
+.progress-bar{flex:1;height:3px;background:#111;border-radius:2px;cursor:pointer;position:relative;}
+.progress-fill{height:100%;background:var(--neon);border-radius:2px;width:0;transition:width 0.5s;}
+.time-label{font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--dim);white-space:nowrap;}
+.volume-slider{width:80px;accent-color:var(--neon);}
+
+/* ====== GENIUS / MATH WORM ====== */
+.tools-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:calc(100vh - 60px);}
+.tool-panel{padding:40px;border-right:1px solid var(--border);}
+.tool-panel:last-child{border-right:none;}
+.tool-panel h2{font-family:'Orbitron',monospace;font-size:1rem;color:var(--neon2);letter-spacing:3px;margin-bottom:25px;border-bottom:1px solid var(--border);padding-bottom:12px;}
+.tool-input{width:100%;background:rgba(0,0,0,0.4);border:1px solid var(--border);color:var(--text);padding:12px 15px;font-family:'Share Tech Mono',monospace;font-size:0.85rem;outline:none;margin-bottom:12px;}
+.tool-input:focus{border-color:var(--neon2);}
+.tool-output{background:#000;border:1px solid var(--border);padding:20px;font-family:'Share Tech Mono',monospace;font-size:0.82rem;color:var(--neon);line-height:1.7;min-height:200px;white-space:pre-wrap;word-break:break-word;}
+.math-display{font-family:'Orbitron',monospace;font-size:2rem;color:var(--gold);text-align:center;padding:20px;border:1px solid rgba(255,215,0,0.2);margin:15px 0;background:rgba(255,215,0,0.03);}
+.quiz-option{padding:12px 18px;border:1px solid var(--border);margin:8px 0;cursor:pointer;font-family:'Share Tech Mono',monospace;font-size:0.8rem;transition:all 0.2s;}
+.quiz-option:hover{border-color:var(--neon2);background:rgba(0,207,255,0.05);}
+.quiz-option.correct{border-color:var(--neon);background:rgba(0,255,136,0.1);color:var(--neon);}
+.quiz-option.wrong{border-color:var(--red);background:rgba(255,34,68,0.1);color:var(--red);}
+
+/* ====== POPUP ====== */
+.popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:5000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.popup-overlay.show{display:flex;}
+.popup-box{background:var(--bg2);border:1px solid var(--border);padding:40px;max-width:480px;width:90%;position:relative;animation:popIn 0.3s ease;}
+@keyframes popIn{from{transform:scale(0.85);opacity:0;}to{transform:scale(1);opacity:1;}}
+.popup-close{position:absolute;top:15px;right:15px;background:none;border:none;color:var(--dim);font-size:1.2rem;cursor:pointer;font-family:'Share Tech Mono',monospace;}
+.popup-close:hover{color:var(--red);}
+.popup-icon{font-size:2.5rem;margin-bottom:15px;}
+.popup-title{font-family:'Orbitron',monospace;font-size:1rem;color:var(--neon);letter-spacing:3px;margin-bottom:10px;}
+.popup-text{font-size:0.9rem;color:var(--dim);line-height:1.6;margin-bottom:25px;}
+.popup-actions{display:flex;gap:10px;}
+
+/* ====== NOTIFICATIONS ====== */
+#notif-container{position:fixed;top:75px;right:20px;z-index:8000;display:flex;flex-direction:column;gap:10px;pointer-events:none;}
+.notif{background:var(--bg2);border-left:3px solid var(--neon);padding:14px 20px;font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--text);max-width:320px;animation:notifIn 0.3s ease,notifOut 0.3s ease 3.7s forwards;pointer-events:all;}
+.notif.error{border-left-color:var(--red);color:var(--red);}
+.notif.warn{border-left-color:var(--gold);color:var(--gold);}
+@keyframes notifIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}
+@keyframes notifOut{from{opacity:1;}to{opacity:0;transform:translateX(100%);}}
+
+/* ====== FOOTER ====== */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:40px;text-align:center;margin-bottom:70px;}
+.footer-logo{font-family:'Orbitron',monospace;font-size:1.5rem;color:var(--neon);letter-spacing:6px;margin-bottom:10px;}
+.footer-sub{font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--dim);letter-spacing:2px;}
+.footer-links{display:flex;justify-content:center;gap:30px;margin:20px 0;}
+.footer-links a{color:var(--dim);text-decoration:none;font-family:'Share Tech Mono',monospace;font-size:0.72rem;letter-spacing:1px;cursor:pointer;}
+.footer-links a:hover{color:var(--neon);}
+.footer-credit{margin-top:20px;font-family:'VT323',monospace;font-size:1.1rem;color:var(--gold);}
+
+/* ====== ABOUT / PROFILE ====== */
+.profile-hero{padding:80px 40px;text-align:center;background:radial-gradient(ellipse at center,rgba(0,255,136,0.05) 0%,transparent 70%);}
+.profile-avatar{width:120px;height:120px;background:linear-gradient(135deg,var(--neon),var(--neon2));border-radius:50%;margin:0 auto 25px;display:flex;align-items:center;justify-content:center;font-family:'Orbitron',monospace;font-size:2.5rem;color:var(--bg);font-weight:900;border:3px solid var(--neon);box-shadow:0 0 40px rgba(0,255,136,0.3);}
+.profile-name{font-family:'Orbitron',monospace;font-size:1.8rem;color:#fff;letter-spacing:4px;}
+.profile-title{font-family:'Share Tech Mono',monospace;font-size:0.85rem;color:var(--neon);margin:8px 0;}
+.profile-location{font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--dim);}
+
+/* MISC */
+.divider{border:none;border-top:1px solid var(--border);margin:40px 0;}
+.tag{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--neon2);border:1px solid var(--neon2);padding:2px 8px;letter-spacing:1px;margin:3px;}
+.loading-bar{height:2px;background:linear-gradient(90deg,transparent,var(--neon),transparent);background-size:200% 100%;animation:loading 1.5s infinite;}
+@keyframes loading{0%{background-position:200%;}100%{background-position:-200%;}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.fade-in{animation:fadeIn 0.6s ease both;}
+
+/* ====== RESEARCH PAGE ====== */
+.research-layout{padding:40px;max-width:1100px;margin:0 auto;}
+.research-card{background:var(--bg2);border:1px solid var(--border);padding:25px;margin-bottom:20px;transition:all 0.2s;}
+.research-card:hover{border-color:var(--neon2);}
+.research-card h3{font-family:'Orbitron',monospace;font-size:0.9rem;color:var(--neon2);letter-spacing:2px;margin-bottom:10px;}
+.research-card p{font-size:0.88rem;color:var(--dim);line-height:1.7;}
+.research-card .tags{margin-top:12px;}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+::-webkit-scrollbar-thumb:hover{background:var(--neon);}
+
+@media(max-width:768px){
+  .tools-grid,.notes-layout{grid-template-columns:1fr;}
+  .hero-stats{grid-template-columns:repeat(2,1fr);}
+  .store-grid{padding:20px;}
+  .cyber-grid{padding:20px;}
+  .nav-links{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- MATRIX CANVAS -->
+<canvas id="matrix-canvas"></canvas>
+
+<!-- CUSTOM CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-trail"></div>
+
+<!-- NOTIFICATIONS -->
+<div id="notif-container"></div>
+
+<!-- ====== POPUP ====== -->
+<div class="popup-overlay" id="popup-overlay">
+  <div class="popup-box">
+    <button class="popup-close" onclick="closePopup()">✕</button>
+    <div class="popup-icon" id="popup-icon">🔐</div>
+    <div class="popup-title" id="popup-title">ALERT</div>
+    <div class="popup-text" id="popup-text">Message here</div>
+    <div class="popup-actions" id="popup-actions">
+      <button class="btn btn-solid" onclick="closePopup()">CONFIRM</button>
+      <button class="btn btn-outline" onclick="closePopup()">DISMISS</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== NAVIGATION ====== -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="showPage('home')">EZONOTOR <span>TIMES</span></div>
+    <div class="nav-links">
+      <a onclick="showPage('home')" class="active" id="nav-home">HOME</a>
+      <a onclick="showPage('cyber')" id="nav-cyber">CYBER</a>
+      <a onclick="showPage('notes')" id="nav-notes">NOTES</a>
+      <a onclick="showPage('store')" id="nav-store">STORE</a>
+      <a onclick="showPage('genius')" id="nav-genius">GENIUS</a>
+      <a onclick="showPage('research')" id="nav-research">RESEARCH</a>
+      <a onclick="showPage('about')" id="nav-about">ABOUT</a>
+    </div>
+    <div class="nav-auth">
+      <div id="auth-btns">
+        <button class="btn btn-outline" onclick="showPage('login')">LOGIN</button>
+        <button class="btn btn-solid" onclick="showPage('register')">REGISTER</button>
+      </div>
+      <div id="user-badge">
+        <div class="avatar" id="user-avatar">E</div>
+        <span id="user-name-display">User</span>
+        <button class="btn btn-red" onclick="logout()">LOGOUT</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ====== MUSIC PLAYER ====== -->
+<div class="music-player" id="music-player">
+  <div class="player-inner">
+    <div class="player-art" id="player-art">🎵</div>
+    <div class="player-info">
+      <div class="player-track" id="player-track">Cyber Pulse — EZT Beats</div>
+      <div class="player-artist" id="player-artist">EZONOTOR TIMES COLLECTION</div>
+    </div>
+    <div class="player-controls">
+      <button class="player-btn" onclick="prevTrack()">⏮</button>
+      <button class="player-btn main" id="play-btn" onclick="togglePlay()">▶</button>
+      <button class="player-btn" onclick="nextTrack()">⏭</button>
+      <button class="player-btn" onclick="toggleShuffle()" id="shuffle-btn">🔀</button>
+    </div>
+    <div class="player-progress">
+      <span class="time-label" id="time-cur">0:00</span>
+      <div class="progress-bar" onclick="seekTrack(event)">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+      <span class="time-label" id="time-dur">3:44</span>
+    </div>
+    <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.01" value="0.7" oninput="setVolume(this.value)">
+    <span style="font-size:1rem;cursor:pointer" onclick="toggleMute()" id="vol-icon">🔊</span>
+  </div>
+</div>
+
+<!-- ====================================
+     PAGE: HOME
+     ==================================== -->
+<div class="page active" id="page-home">
+  <!-- TICKER -->
+  <div class="ticker-wrap" style="margin-top:60px;">
+    <div class="ticker" id="ticker">
+      <span class="ticker-item">📡 EZONOTOR TIMES <span>LIVE</span></span>
+      <span class="ticker-item">🛡️ CYBERSECURITY ALERT LEVEL: <span>ELEVATED</span></span>
+      <span class="ticker-item">🎵 NEW TRACKS AVAILABLE IN STORE</span>
+      <span class="ticker-item">📍 SESHEGO, POLOKWANE — SOUTH AFRICA</span>
+      <span class="ticker-item">🧠 GENIUS MODE ACTIVATED — TEST YOUR KNOWLEDGE</span>
+      <span class="ticker-item">🔐 ENCRYPTION: <span>AES-256</span></span>
+      <span class="ticker-item">📡 EZONOTOR TIMES <span>LIVE</span></span>
+      <span class="ticker-item">🛡️ CYBERSECURITY ALERT LEVEL: <span>ELEVATED</span></span>
+      <span class="ticker-item">🎵 NEW TRACKS AVAILABLE IN STORE</span>
+      <span class="ticker-item">📍 SESHEGO, POLOKWANE — SOUTH AFRICA</span>
+      <span class="ticker-item">🧠 GENIUS MODE ACTIVATED — TEST YOUR KNOWLEDGE</span>
+      <span class="ticker-item">🔐 ENCRYPTION: <span>AES-256</span></span>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-badge">EST. SESHEGO, POLOKWANE ◈ SOUTH AFRICA</div>
+    <div class="hero-title">
+      <div class="line1">EZONOTOR</div>
+      <div class="line2">TIMES</div>
+    </div>
+    <div class="hero-sub">DIGITAL INTELLIGENCE · SECURITY · CULTURE</div>
+    <div class="hero-author">Created by <span>Ezekiel Thupetsi Mojela</span> — Seshego, Polokwane</div>
+    <div class="hero-btns">
+      <button class="btn btn-solid" onclick="showPage('store')">🛒 VISIT STORE</button>
+      <button class="btn btn-outline" onclick="showPage('cyber')">🛡️ CYBER MENU</button>
+      <button class="btn btn-outline" onclick="showPage('genius')">🧠 GENIUS MODE</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-box"><div class="stat-num">256</div><div class="stat-lbl">BIT ENCRYPT</div></div>
+      <div class="stat-box"><div class="stat-num">48</div><div class="stat-lbl">TRACKS</div></div>
+      <div class="stat-box"><div class="stat-num">∞</div><div class="stat-lbl">KNOWLEDGE</div></div>
+      <div class="stat-box"><div class="stat-num">24/7</div><div class="stat-lbl">ONLINE</div></div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="section">
+    <div class="section-title">PLATFORM FEATURES</div>
+    <div class="cards-grid">
+      <div class="card" onclick="showPage('cyber')">
+        <div class="card-icon">🛡️</div>
+        <div class="card-title">CYBERSECURITY CENTER</div>
+        <div class="card-text">Advanced threat intelligence, encryption tools, network scanning concepts, and digital defense guides.</div>
+      </div>
+      <div class="card" onclick="showPage('notes')">
+        <div class="card-icon">📝</div>
+        <div class="card-title">SECURE NOTES</div>
+        <div class="card-text">Write, edit and manage encrypted personal notes. Auto-saved locally. Rich text editor with markdown support.</div>
+      </div>
+      <div class="card" onclick="showPage('store')">
+        <div class="card-icon">🛒</div>
+        <div class="card-title">DIGITAL STORE</div>
+        <div class="card-text">Purchase high-quality digital artwork and exclusive music tracks directly from Ezonotor Times.</div>
+      </div>
+      <div class="card" onclick="showPage('genius')">
+        <div class="card-icon">🧠</div>
+        <div class="card-title">GENIUS MODE</div>
+        <div class="card-text">Ask anything. Get intelligent answers. Powered by advanced knowledge base and AI-style processing.</div>
+      </div>
+      <div class="card" onclick="showPage('genius')">
+        <div class="card-icon">🐛</div>
+        <div class="card-title">MATH WORM</div>
+        <div class="card-text">Solve equations, generate quiz challenges, and sharpen your mathematical thinking with step-by-step solutions.</div>
+      </div>
+      <div class="card" onclick="showPage('research')">
+        <div class="card-icon">🔬</div>
+        <div class="card-title">RESEARCH HUB</div>
+        <div class="card-text">Curated articles, topics, and deep dives into technology, science, culture and more.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT SNIPPET -->
+  <div class="section" style="background:var(--bg2);max-width:100%;padding:60px 40px;">
+    <div style="max-width:1200px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;">
+      <div>
+        <div class="section-title">ABOUT THE CREATOR</div>
+        <p style="font-size:1rem;color:var(--dim);line-height:1.8;margin-bottom:15px;">
+          <strong style="color:var(--neon)">Ezekiel Thupetsi Mojela</strong> is a digital innovator from <span style="color:var(--gold)">Seshego, Polokwane</span>, South Africa — building platforms that blend cybersecurity, art, music, and intelligence into unified digital experiences.
+        </p>
+        <p style="font-size:0.9rem;color:var(--dim);line-height:1.8;">
+          Ezonotor Times is his flagship project — a cyberpunk-inspired web platform for education, creativity, and digital security awareness.
+        </p>
+        <div style="margin-top:20px;">
+          <span class="tag">CYBERSECURITY</span>
+          <span class="tag">MUSIC</span>
+          <span class="tag">MATHEMATICS</span>
+          <span class="tag">SOUTH AFRICA</span>
+          <span class="tag">DIGITAL ART</span>
+        </div>
+      </div>
+      <div class="terminal-box">
+        <div>> IDENTITY SCAN INITIATED...</div>
+        <div>> NAME: Ezekiel Thupetsi Mojela</div>
+        <div>> LOCATION: Seshego, Polokwane, RSA</div>
+        <div>> ROLE: Digital Creator & Developer</div>
+        <div>> PLATFORM: Ezonotor Times</div>
+        <div>> SKILLS: [Cyber | Music | Math | Art]</div>
+        <div>> STATUS: <span style="color:var(--neon)">ACTIVE & ONLINE</span></div>
+        <div>> MISSION: Empower Through Technology</div>
+        <div>_ <span class="terminal-cursor"></span></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-logo">EZONOTOR TIMES</div>
+    <div class="footer-sub">DIGITAL INTELLIGENCE FROM SESHEGO, POLOKWANE</div>
+    <div class="footer-links">
+      <a onclick="showPage('home')">HOME</a>
+      <a onclick="showPage('cyber')">SECURITY</a>
+      <a onclick="showPage('store')">STORE</a>
+      <a onclick="showPage('genius')">GENIUS</a>
+      <a onclick="showPage('research')">RESEARCH</a>
+      <a onclick="showPage('about')">ABOUT</a>
+    </div>
+    <div class="footer-credit">© 2024 Ezekiel Thupetsi Mojela — All Rights Reserved</div>
+  </footer>
+</div>
+
+<!-- ====================================
+     PAGE: LOGIN
+     ==================================== -->
+<div class="page" id="page-login">
+  <div class="auth-page">
+    <div class="auth-box fade-in">
+      <div class="auth-title">ACCESS PORTAL</div>
+      <div class="auth-sub">> ENTER CREDENTIALS TO AUTHENTICATE</div>
+      <div class="loading-bar" style="margin-bottom:25px;"></div>
+      <div class="form-group">
+        <label>USERNAME / EMAIL</label>
+        <input type="text" id="login-user" placeholder="user@ezonotor.com">
+      </div>
+      <div class="form-group">
+        <label>PASSWORD</label>
+        <input type="password" id="login-pass" placeholder="••••••••••••">
+        <div id="login-err" class="form-error"></div>
+      </div>
+      <div class="captcha-box">
+        <input type="checkbox" id="captcha-check">
+        <span>I am not a bot — CAPTCHA verified</span>
+        <span style="margin-left:auto;color:var(--neon);font-size:1.2rem;">🔐</span>
+      </div>
+      <button class="btn btn-solid" style="width:100%;padding:14px;" onclick="doLogin()">AUTHENTICATE →</button>
+      <div class="form-link">No account? <a onclick="showPage('register')">REGISTER NOW</a> | <a onclick="showForgot()">FORGOT PASSWORD</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================
+     PAGE: REGISTER
+     ==================================== -->
+<div class="page" id="page-register">
+  <div class="auth-page">
+    <div class="auth-box fade-in">
+      <div class="auth-title">CREATE ACCOUNT</div>
+      <div class="auth-sub">> INITIALIZE NEW USER PROFILE</div>
+      <div class="loading-bar" style="margin-bottom:25px;"></div>
+      <div class="form-group">
+        <label>FULL NAME</label>
+        <input type="text" id="reg-name" placeholder="Ezekiel Mojela">
+      </div>
+      <div class="form-group">
+        <label>EMAIL ADDRESS</label>
+        <input type="email" id="reg-email" placeholder="user@ezonotor.com">
+        <div id="reg-email-err" class="form-error"></div>
+      </div>
+      <div class="form-group">
+        <label>USERNAME</label>
+        <input type="text" id="reg-user" placeholder="coolhacker99">
+      </div>
+      <div class="form-group">
+        <label>PASSWORD</label>
+        <input type="password" id="reg-pass" placeholder="••••••••••••" oninput="checkStrength(this.value)">
+        <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+        <div class="strength-text" id="strength-text">Enter a password</div>
+        <div id="reg-pass-err" class="form-error"></div>
+      </div>
+      <div class="form-group">
+        <label>CONFIRM PASSWORD</label>
+        <input type="password" id="reg-pass2" placeholder="••••••••••••">
+        <div id="reg-pass2-err" class="form-error"></div>
+      </div>
+      <div class="captcha-box">
+        <input type="checkbox" id="captcha-check2">
+        <span>I agree to Ezonotor Terms & CAPTCHA</span>
+        <span style="margin-left:auto;color:var(--neon2);font-size:1.2rem;">🛡️</span>
+      </div>
+      <button class="btn btn-solid" style="width:100%;padding:14px;" onclick="doRegister()">CREATE ACCOUNT →</button>
+      <div class="form-link">Already have an account? <a onclick="showPage('login')">LOGIN HERE</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================
+     PAGE: NOTES
+     ==================================== -->
+<div class="page" id="page-notes">
+  <div class="notes-layout">
+    <div class="notes-sidebar">
+      <h3>MY NOTES</h3>
+      <button class="btn btn-outline" style="width:100%;margin-bottom:15px;" onclick="newNote()">+ NEW NOTE</button>
+      <div id="notes-list"></div>
+    </div>
+    <div class="notes-editor">
+      <div class="editor-toolbar">
+        <button onclick="fmtNote('bold')"><b>B</b></button>
+        <button onclick="fmtNote('italic')"><i>I</i></button>
+        <button onclick="fmtNote('underline')"><u>U</u></button>
+        <button onclick="insertHeading()">H1</button>
+        <button onclick="insertCode()">{ }</button>
+        <button onclick="insertBullet()">• LIST</button>
+        <button onclick="clearNote()">CLR</button>
+        <button onclick="saveNote()" style="margin-left:auto;background:var(--neon);color:var(--bg);border-color:var(--neon);">💾 SAVE</button>
+        <button onclick="deleteNote()" style="border-color:var(--red);color:var(--red);">🗑 DELETE</button>
+      </div>
+      <input type="text" id="note-title-input" placeholder="Note title...">
+      <textarea id="note-body" placeholder="Start writing your note here...&#10;&#10;Tips: Use the toolbar to format text. Notes are saved locally and persist across sessions."></textarea>
+      <div style="font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--dim);">
+        <span id="note-char-count">0 chars</span> · 
+        <span id="note-word-count">0 words</span> · 
+        <span id="note-save-status">Not saved</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================
+     PAGE: CYBERSECURITY
+     ==================================== -->
+<div class="page" id="page-cyber">
+  <div style="padding:30px 40px 10px;margin-top:0;">
+    <div style="font-family:'Orbitron',monospace;font-size:1.8rem;color:var(--neon);letter-spacing:6px;margin-bottom:5px;">🛡️ CYBER COMMAND</div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--dim);">THREAT INTELLIGENCE · DEFENSE · TOOLS · EDUCATION</div>
+    <div class="threat-meter"></div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--gold);margin-top:3px;">GLOBAL THREAT LEVEL: ELEVATED [72%]</div>
+  </div>
+  <div class="cyber-grid">
+    <div class="cyber-card" data-label="ACTIVE">
+      <h3>🔐 ENCRYPTION CENTER</h3>
+      <p>Understand modern encryption standards protecting your data in transit and at rest.</p>
+      <ul>
+        <li>AES-256 — Military grade symmetric encryption</li>
+        <li>RSA-4096 — Asymmetric public key cryptography</li>
+        <li>ChaCha20 — Stream cipher for mobile devices</li>
+        <li>SHA-3 — Secure hashing algorithm</li>
+        <li>TLS 1.3 — Latest transport layer security</li>
+      </ul>
+      <button class="btn btn-outline" onclick="showNotif('🔐 Encryption scan initiated. All systems nominal.','success')">RUN SCAN</button>
+    </div>
+    <div class="cyber-card" data-label="MONITOR">
+      <h3>🌐 NETWORK DEFENSE</h3>
+      <p>Monitor network activity and understand common attack vectors and defense mechanisms.</p>
+      <ul>
+        <li>Firewall rule management and best practices</li>
+        <li>DDoS mitigation strategies</li>
+        <li>Intrusion Detection Systems (IDS/IPS)</li>
+        <li>VPN setup and zero-trust architecture</li>
+        <li>DNS security & DNSSEC configuration</li>
+      </ul>
+      <button class="btn btn-outline" onclick="showNotif('🌐 Network scan complete. No active threats detected.','success')">SCAN NETWORK</button>
+    </div>
+    <div class="cyber-card" data-label="CRITICAL">
+      <h3>🎭 SOCIAL ENGINEERING</h3>
+      <p>Learn to identify and defend against manipulation-based attacks targeting human psychology.</p>
+      <ul>
+        <li>Phishing email identification techniques</li>
+        <li>Vishing & smishing defense</li>
+        <li>Pretexting awareness training</li>
+        <li>Baiting and tailgating prevention</li>
+        <li>Multi-factor authentication setup</li>
+      </ul>
+      <button class="btn btn-outline" onclick="showPopup('⚠️ AWARENESS ALERT','Social engineering is responsible for 90% of data breaches. Never share passwords or OTPs via phone or email. Stay vigilant!','warn')">LEARN MORE</button>
+    </div>
+    <div class="cyber-card" data-label="TOOL">
+      <h3>🔍 VULNERABILITY SCANNER</h3>
+      <p>Understand common vulnerability types and how security researchers identify them responsibly.</p>
+      <ul>
+        <li>SQL Injection — Database attack vectors</li>
+        <li>XSS — Cross-site scripting explained</li>
+        <li>CSRF — Token-based protection</li>
+        <li>Buffer overflow fundamentals</li>
+        <li>CVE database and patch management</li>
+      </ul>
+      <button class="btn btn-outline" onclick="runFakeScan()">ANALYZE</button>
+    </div>
+    <div class="cyber-card" data-label="GUIDE">
+      <h3>🔑 PASSWORD FORTRESS</h3>
+      <p>Build unbreakable password habits using modern security standards and password managers.</p>
+      <ul>
+        <li>Minimum 16 characters with complexity</li>
+        <li>Unique passwords per service</li>
+        <li>Password manager recommendations</li>
+        <li>Have I Been Pwned integration guide</li>
+        <li>Passkey and biometric alternatives</li>
+      </ul>
+      <button class="btn btn-outline" onclick="showPage('register')">TEST STRENGTH</button>
+    </div>
+    <div class="cyber-card" data-label="LIVE">
+      <h3>📡 THREAT INTELLIGENCE</h3>
+      <p>Stay ahead of emerging cyber threats with curated intelligence feeds and trend analysis.</p>
+      <div class="terminal-box" style="margin:15px 0;">
+        <div>> [LIVE] APT Group Activity: <span style="color:var(--gold)">ELEVATED</span></div>
+        <div>> [LIVE] Ransomware Campaigns: <span style="color:var(--red)">HIGH</span></div>
+        <div>> [LIVE] Zero-days Reported: <span style="color:var(--neon)">3 THIS WEEK</span></div>
+        <div>> [LIVE] Patch Status: <span style="color:var(--neon)">UP TO DATE</span></div>
+        <div>_ <span class="terminal-cursor"></span></div>
+      </div>
+    </div>
+    <div class="cyber-card" data-label="SECURE">
+      <h3>🏠 DIGITAL HYGIENE</h3>
+      <p>Essential daily practices to maintain a secure digital lifestyle at home and work.</p>
+      <ul>
+        <li>OS and software update discipline</li>
+        <li>Backup with 3-2-1 strategy</li>
+        <li>Secure Wi-Fi configuration at home</li>
+        <li>Privacy settings on social platforms</li>
+        <li>Recognizing fake apps and downloads</li>
+      </ul>
+    </div>
+    <div class="cyber-card" data-label="ADVANCED">
+      <h3>💻 DARK WEB AWARENESS</h3>
+      <p>Understand the hidden layers of the internet — what they are, why they exist, and how to stay safe.</p>
+      <ul>
+        <li>Tor network — how onion routing works</li>
+        <li>Darknet markets and illicit activity</li>
+        <li>Data breach monitoring services</li>
+        <li>Legal OSINT research techniques</li>
+        <li>Anonymous browsing best practices</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================
+     PAGE: STORE
+     ==================================== -->
+<div class="page" id="page-store">
+  <div class="store-header">
+    <div class="store-title">🛒 EZONOTOR MARKET</div>
+    <div style="display:flex;align-items:center;gap:15px;">
+      <div class="store-tabs">
+        <button class="store-tab active" onclick="switchStoreTab('images',this)">🖼 IMAGES</button>
+        <button class="store-tab" onclick="switchStoreTab('music',this)">🎵 MUSIC</button>
+      </div>
+      <div class="cart-badge">
+        <button class="btn btn-outline" onclick="viewCart()">🛒 CART</button>
+        <div class="cart-badge-num" id="cart-count">0</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="store-images" class="store-grid">
+    <!-- Image products -->
+    <div class="store-item">
+      <img class="store-img" src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80" alt="Circuit Board" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="store-img-placeholder" style="display:none">⚡</div>
+      <div class="store-info">
+        <div class="store-item-title">CIRCUIT DREAMS</div>
+        <div class="store-item-by">by Ezonotor Digital Art</div>
+        <div class="store-item-price">R 89.99 <span>ZAR</span></div>
+        <button class="cart-btn" onclick="addToCart('Circuit Dreams','R 89.99')">ADD TO CART</button>
+      </div>
+    </div>
+    <div class="store-item">
+      <img class="store-img" src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=600&q=80" alt="Neon City" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="store-img-placeholder" style="display:none">🌆</div>
+      <div class="store-info">
+        <div class="store-item-title">NEON POLOKWANE</div>
+        <div class="store-item-by">by Ezekiel T. Mojela</div>
+        <div class="store-item-price">R 149.99 <span>ZAR</span></div>
+        <button class="cart-btn" onclick="addToCart('Neon Polokwane','R 149.99')">ADD TO CART</button>
+      </div>
+    </div>
+    <div class="store-item">
+      <img class="store-img" src="https://images.unsplash.com/photo-1502085026900-5c19d53c4c20?w=600&q=80" alt="Stars" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="store-img-placeholder" style="display:none">🌌</div>
+      <div class="store-info">
+        <div class="store-item-title">LIMPOPO COSMOS</div>
+        <div class="store-item-by">by Ezonotor Digital Art</div>
+        <div class="store-item-price">R 199.99 <span>ZAR</span></div>
+        <button class="cart-btn" onclick="addToCart('Limpopo Cosmos','R 199.99')">ADD TO CART</button>
+      </div>
+    </div>
+    <div class="store-item">
+      <img class="store-img" src="https://images.unsplash.com/photo-1510906594845-bc082582c8cc?w=600&q=80" alt="Abstract" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="store-img-placeholder" style="display:none">🎨</div>
+      <div class="store-info">
+        <div class="store-item-title">DATA STREAM</div>
+        <div class="store-item-by">by Ezonotor Labs</div>
+        <div class="store-item-price">R 79.99 <span>ZAR</span></div>
+        <button class="cart-btn" onclick="addToCart('Data Stream','R 79.99')">ADD TO CART</button>
+      </div>
+    </div>
+    <div class="store-item">
+      <img class="store-img" src="https://images.unsplash.com/photo-1564769662533-4f00a87b4056?w=600&q=80" alt="Binary" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="store-img-placeholder" style="display:none">💾</div>
+      <div class="store-info">
+        <div class="store-item-title">BINARY SUNSET</div>
+        <div class="store-item-by">by Ezekiel T. Mojela</div>
+        <div class="store-item-price">R 119.99 <span>ZAR</span></div>
+        <button class="cart-btn" onclick="addToCart('Binary Sunset','R 119.99')">ADD TO CART</button>
+      </div>
+    </div>
+    <div class="store-item">
+      <img class="store-img" src="https://images.unsplash.com/photo-1655635949384-f737b6dd424c?w=600&q=80" alt="AI" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="store-img-placeholder" style="display:none">🤖</div>
+      <div class="store-info">
+        <div class="store-item-title">SESHEGO AI</div>
+        <div class="store-item-by">by Ezonotor Digital Art</div>
+        <div class="store-item-price">R 249.99 <span>ZAR</span></div>
+        <button class="cart-btn" onclick="addToCart('Seshego AI','R 249.99')">ADD TO CART</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="store-music" class="store-grid" style="display:none;">
+    <div class="store-item">
+      <div class="store-img-placeholder" style="background:linear-gradient(135deg,#00ff88,#004422)">🎵</div>
+      <div class="store-info">
+        <div class="store-item-title">CYBER PULSE</div>
+        <div class="store-item-by">by EZT Beats · 3:44 · Electronic</div>
+        <div class="store-item-price">R 29.99 <span>ZAR</span></div>
+        <button class="cart-btn" onclick="playTrack(0);showNotif('▶ Now playing: Cyber Pulse')">▶ PREVIEW</button>
+        <button class="cart-btn" onclick="addToCart('Cyber Pulse (Track)','R 29.99')">ADD TO CART</button>
+      </div>
+    </div>
+    <div class="store-item">
+      <div class="store-img-placeholder" style="background:linear-gradient(135deg,#00cfff,#002244)">🎶</div>
+      <div class="store-info">
+        <div class="store-item-title">SESHEGO NIGHTS</div>
+        <div class="store-item-by">by EZT Beats · 4:12 · Afrobeats</div>
+        <div class="store-item-price">R 34.99 <span>ZAR</span></div>
+        <button class="cart-btn" onclick="playTrack(1);showNotif('▶ Now playing: Seshego Nights')">▶ PREVIEW</button>
+        <button class="cart-btn" onclick="addToCart('Seshego Nights (Track)','R 34.99')">ADD TO CART</button>
+      </div>
+    </div>
+    <div class="store-item">
+      <div class="store-img-placeholder" style="background:linear-gradient(135deg,#ffd700,#442200)">🎸</div>
+      <div class="store-info">
+        <div class="store-item-title">MATRIX FLOW</div>
+        <div class="store-item-by">by EZT Beats · 5:01 · Lo-Fi Hip Hop</div>
+        <div class="store-item-price">R 24.99 <span>ZAR</span></div>
+        <button class="cart-btn" onclick="playTrack(2);showNotif('▶ Now playing: Matrix Flow')">▶ PREVIEW</button>
+        <button class="cart-btn" onclick="addToCart('Matrix Flow (Track)','R 24.99')">ADD TO CART</button>
+      </div>
+    </div>
+    <div class="store-item">
+      <div class="store-img-placeholder" style="background:linear-gradient(135deg,#ff2244,#220011)">🥁</div>
+      <div class="store-info">
+        <div class="store-item-title">POLOKWANE BASS</div>
+        <div class="store-item-by">by EZT Beats · 3:28 · Gqom</div>
+        <div class="store-item-price">R 39.99 <span>ZAR</span></div>
+        <button class="cart-btn" onclick="playTrack(3);showNotif('▶ Now playing: Polokwane Bass')">▶ PREVIEW</button>
+        <button class="cart-btn" onclick="addToCart('Polokwane Bass (Track)','R 39.99')">ADD TO CART</button>
+      </div>
+    </div>
+    <div class="store-item">
+      <div class="store-img-placeholder" style="background:linear-gradient(135deg,#cc00ff,#110022)">🎹</div>
+      <div class="store-info">
+        <div class="store-item-title">LIMPOPO WAVES</div>
+        <div class="store-item-by">by EZT Beats · 4:56 · Ambient</div>
+        <div class="store-item-price">R 44.99 <span>ZAR</span></div>
+        <button class="cart-btn" onclick="playTrack(4);showNotif('▶ Now playing: Limpopo Waves')">▶ PREVIEW</button>
+        <button class="cart-btn" onclick="addToCart('Limpopo Waves (Track)','R 44.99')">ADD TO CART</button>
+      </div>
+    </div>
+    <div class="store-item">
+      <div class="store-img-placeholder" style="background:linear-gradient(135deg,#00ff88,#0044ff)">🎺</div>
+      <div class="store-info">
+        <div class="store-item-title">EZONOTOR ANTHEM</div>
+        <div class="store-item-by">by Ezekiel T. Mojela · 6:20 · Fusion</div>
+        <div class="store-item-price">R 59.99 <span>ZAR</span></div>
+        <button class="cart-btn" onclick="playTrack(5);showNotif('▶ Now playing: Ezonotor Anthem')">▶ PREVIEW</button>
+        <button class="cart-btn" onclick="addToCart('Ezonotor Anthem (Track)','R 59.99')">ADD TO CART</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================
+     PAGE: GENIUS + MATH WORM
+     ==================================== -->
+<div class="page" id="page-genius">
+  <div style="padding:25px 40px 0;">
+    <div style="font-family:'Orbitron',monospace;font-size:1.5rem;color:var(--neon);letter-spacing:4px;">🧠 GENIUS MODE + 🐛 MATH WORM</div>
+    <div style="font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--dim);margin-top:5px;">ASK ANYTHING · SOLVE EQUATIONS · BEAT THE QUIZ</div>
+  </div>
+  <div class="tools-grid">
+    <!-- GENIUS -->
+    <div class="tool-panel">
+      <h2>🧠 GENIUS — KNOWLEDGE ENGINE</h2>
+      <input class="tool-input" type="text" id="genius-input" placeholder="Ask anything: science, history, tech, culture..." onkeypress="if(event.key==='Enter')askGenius()">
+      <button class="btn btn-solid" onclick="askGenius()" style="margin-bottom:15px;">ASK GENIUS →</button>
+      <div class="tool-output" id="genius-output">GENIUS ENGINE READY.
+Type your question above and press ENTER or click ASK.
+
+Examples:
+> What is quantum computing?
+> Who invented the internet?
+> Explain DNA in simple terms
+> What is cybersecurity?
+> Tell me about Polokwane
+> Who is Ezekiel Mojela?</div>
+    </div>
+    <!-- MATH WORM -->
+    <div class="tool-panel" style="border-right:none;">
+      <h2>🐛 MATH WORM — EQUATION SOLVER</h2>
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <button class="btn btn-outline" style="font-size:0.7rem;padding:6px 10px;" onclick="mathMode='solve';showNotif('Mode: Equation Solver')">SOLVE</button>
+        <button class="btn btn-outline" style="font-size:0.7rem;padding:6px 10px;" onclick="mathMode='quiz';loadQuiz()">QUIZ ME</button>
+        <button class="btn btn-outline" style="font-size:0.7rem;padding:6px 10px;" onclick="mathMode='times';showTimesTable()">TIMES TABLE</button>
+      </div>
+      <input class="tool-input" type="text" id="math-input" placeholder="Enter: 2+2, 5*8, 100/4, 2^10, sqrt(144)..." onkeypress="if(event.key==='Enter')solveMath()">
+      <button class="btn btn-solid" onclick="solveMath()" style="margin-bottom:10px;">CALCULATE →</button>
+      <div class="math-display" id="math-display">_ = ?</div>
+      <div id="quiz-area"></div>
+      <div class="tool-output" id="math-output">MATH WORM INITIALIZING...
+Ready to solve equations and challenge your mind!
+
+TRY:
+> 2 + 2
+> 15 * 7 - 3
+> sqrt(256)
+> 2^8
+> 360 / 12</div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================
+     PAGE: RESEARCH
+     ==================================== -->
+<div class="page" id="page-research">
+  <div class="research-layout">
+    <div style="font-family:'Orbitron',monospace;font-size:1.5rem;color:var(--neon2);letter-spacing:4px;margin-bottom:30px;">🔬 RESEARCH HUB</div>
+
+    <div class="research-card">
+      <h3>CYBERSECURITY IN SUB-SAHARAN AFRICA</h3>
+      <p>South Africa faces unique cybersecurity challenges as digital infrastructure expands rapidly. With Limpopo Province increasingly connected, institutions like schools, hospitals, and businesses must adopt modern security practices. Phishing, ransomware, and SIM swap fraud are among the most prevalent threats affecting South Africans daily.</p>
+      <div class="tags"><span class="tag">CYBER</span><span class="tag">AFRICA</span><span class="tag">SOUTH AFRICA</span></div>
+    </div>
+    <div class="research-card">
+      <h3>THE MATHEMATICS OF ENCRYPTION</h3>
+      <p>Modern encryption relies on number theory, specifically the computational difficulty of factoring large prime numbers. RSA encryption, developed in 1977, uses the product of two large primes as a public key. Breaking this would require solving the integer factorization problem — currently infeasible with classical computers but potentially vulnerable to quantum algorithms like Shor's algorithm.</p>
+      <div class="tags"><span class="tag">MATH</span><span class="tag">ENCRYPTION</span><span class="tag">QUANTUM</span></div>
+    </div>
+    <div class="research-card">
+      <h3>MUSIC TECHNOLOGY AND AI COMPOSITION</h3>
+      <p>Artificial intelligence is revolutionizing music production. Machine learning models trained on vast libraries of human-composed music can now generate melodies, harmonies, and even full arrangements. African music traditions, with their complex polyrhythmic structures, present fascinating challenges and opportunities for AI music systems attempting to capture cultural nuance.</p>
+      <div class="tags"><span class="tag">MUSIC</span><span class="tag">AI</span><span class="tag">TECHNOLOGY</span></div>
+    </div>
+    <div class="research-card">
+      <h3>DIGITAL IDENTITY IN THE MODERN AGE</h3>
+      <p>As more services move online, digital identity management becomes critical. Self-sovereign identity (SSI) systems using blockchain technology promise to give individuals control over their personal data without relying on centralized authorities. For communities in Polokwane and Limpopo, access to secure digital identity could unlock financial services, healthcare records, and government benefits.</p>
+      <div class="tags"><span class="tag">IDENTITY</span><span class="tag">BLOCKCHAIN</span><span class="tag">PRIVACY</span></div>
+    </div>
+    <div class="research-card">
+      <h3>SESHEGO: DIGITAL TRANSFORMATION IN SOUTH AFRICAN TOWNSHIPS</h3>
+      <p>Township communities across South Africa are increasingly leveraging mobile technology and the internet to build businesses, access education, and participate in the digital economy. Seshego, a township of Polokwane in Limpopo, represents a microcosm of this transformation — where creative entrepreneurs like digital artists and music producers are building platforms that connect local talent to global audiences.</p>
+      <div class="tags"><span class="tag">SESHEGO</span><span class="tag">POLOKWANE</span><span class="tag">DIGITAL</span><span class="tag">LIMPOPO</span></div>
+    </div>
+    <div class="research-card">
+      <h3>ZERO TRUST ARCHITECTURE EXPLAINED</h3>
+      <p>The Zero Trust security model operates on the principle of "never trust, always verify" — no user or device is automatically trusted regardless of network location. Implemented through micro-segmentation, multi-factor authentication, and continuous monitoring, Zero Trust is becoming the gold standard for enterprise security. Understanding this framework is essential for any aspiring cybersecurity professional.</p>
+      <div class="tags"><span class="tag">ZERO TRUST</span><span class="tag">ENTERPRISE</span><span class="tag">SECURITY</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ====================================
+     PAGE: ABOUT
+     ==================================== -->
+<div class="page" id="page-about">
+  <div class="profile-hero">
+    <div class="profile-avatar">E</div>
+    <div class="profile-name">EZEKIEL THUPETSI MOJELA</div>
+    <div class="profile-title">Digital Creator · Cybersecurity Enthusiast · Music Producer</div>
+    <div class="profile-location">📍 Seshego, Polokwane, Limpopo · South Africa</div>
+    <div style="margin-top:25px;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;">
+      <span class="tag">DEVELOPER</span><span class="tag">MUSIC PRODUCER</span><span class="tag">CYBER</span>
+      <span class="tag">EDUCATOR</span><span class="tag">INNOVATOR</span><span class="tag">LIMPOPO</span>
+    </div>
+  </div>
+  <div class="section" style="display:grid;grid-template-columns:1fr 1fr;gap:40px;">
+    <div>
+      <div class="section-title">BIOGRAPHY</div>
+      <p style="color:var(--dim);line-height:1.9;font-size:0.95rem;">
+        Ezekiel Thupetsi Mojela hails from the vibrant township of <strong style="color:var(--neon)">Seshego</strong> in <strong style="color:var(--neon)">Polokwane</strong>, the capital of Limpopo Province, South Africa. Passionate about the intersection of technology, music, and knowledge, he created <strong style="color:var(--gold)">Ezonotor Times</strong> as a platform to express his multifaceted creative vision.
+      </p>
+      <br>
+      <p style="color:var(--dim);line-height:1.9;font-size:0.95rem;">
+        From cybersecurity education to original music production, digital art sales to mathematics tools, Ezekiel's vision is a unified digital universe where creativity and intelligence meet. He believes technology should be accessible to everyone — especially youth in Limpopo and across South Africa.
+      </p>
+    </div>
+    <div class="terminal-box">
+      <div>> PROFILE: Ezekiel Thupetsi Mojela</div>
+      <div>> LOCATION: Seshego, Polokwane</div>
+      <div>> PROVINCE: Limpopo, South Africa</div>
+      <div>> PLATFORM: Ezonotor Times</div>
+      <div>> FOUNDED: 2024</div>
+      <div>> INTERESTS:</div>
+      <div>  · Cybersecurity & Digital Defense</div>
+      <div>  · Music Production (EZT Beats)</div>
+      <div>  · Digital Art & Visual Design</div>
+      <div>  · Mathematics & Education</div>
+      <div>  · Technology Empowerment</div>
+      <div>> MISSION: Digital empowerment</div>
+      <div>> STATUS: <span style="color:var(--neon)">BUILDING DAILY ✓</span></div>
+      <div>_ <span class="terminal-cursor"></span></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">PLATFORM SECTIONS</div>
+    <div class="cards-grid">
+      <div class="card"><div class="card-icon">🛡️</div><div class="card-title">CYBER COMMAND</div><div class="card-text">Threat intelligence, encryption tools, and security education.</div></div>
+      <div class="card"><div class="card-icon">📝</div><div class="card-title">SECURE NOTES</div><div class="card-text">Encrypted personal note-taking with rich formatting.</div></div>
+      <div class="card"><div class="card-icon">🛒</div><div class="card-title">DIGITAL STORE</div><div class="card-text">Original digital art and music tracks for sale.</div></div>
+      <div class="card"><div class="card-icon">🧠</div><div class="card-title">GENIUS + MATH</div><div class="card-text">Knowledge engine and mathematical problem solver.</div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let currentPage = 'home';
+let users = JSON.parse(localStorage.getItem('ezt_users')||'[]');
+let currentUser = JSON.parse(localStorage.getItem('ezt_currentUser')||'null');
+let notes = JSON.parse(localStorage.getItem('ezt_notes')||'[]');
+let cart = JSON.parse(localStorage.getItem('ezt_cart')||'[]');
+let activeNote = null;
+let mathMode = 'solve';
+let cartCount = cart.length;
+let isPlaying = false;
+let isMuted = false;
+let currentTrack = 0;
+let shuffle = false;
+let progress = 0;
+let progressTimer = null;
+
+const tracks = [
+  {title:'Cyber Pulse',artist:'EZT Beats',duration:'3:44',durationS:224,icon:'🎵'},
+  {title:'Seshego Nights',artist:'EZT Beats',duration:'4:12',durationS:252,icon:'🎶'},
+  {title:'Matrix Flow',artist:'EZT Beats',duration:'5:01',durationS:301,icon:'🎸'},
+  {title:'Polokwane Bass',artist:'EZT Beats',duration:'3:28',durationS:208,icon:'🥁'},
+  {title:'Limpopo Waves',artist:'EZT Beats',duration:'4:56',durationS:296,icon:'🎹'},
+  {title:'Ezonotor Anthem',artist:'Ezekiel T. Mojela',duration:'6:20',durationS:380,icon:'🎺'},
+];
+
+// ===== CURSOR =====
+const cursor = document.getElementById('cursor');
+const trail = document.getElementById('cursor-trail');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX - 9 + 'px';
+  cursor.style.top = e.clientY - 9 + 'px';
+  setTimeout(() => {
+    trail.style.left = e.clientX - 3 + 'px';
+    trail.style.top = e.clientY - 3 + 'px';
+  }, 80);
+});
+document.addEventListener('mousedown', () => cursor.style.transform = 'scale(0.6)');
+document.addEventListener('mouseup', () => cursor.style.transform = 'scale(1)');
+
+// ===== MATRIX RAIN =====
+const canvas = document.getElementById('matrix-canvas');
+const ctx = canvas.getContext('2d');
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+const cols = Math.floor(canvas.width / 20);
+const drops = Array(cols).fill(1);
+const chars = '01アイウエオカキクケコABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*(){}[]<>';
+function drawMatrix() {
+  ctx.fillStyle = 'rgba(2,11,18,0.05)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.fillStyle = '#00ff88';
+  ctx.font = '14px Share Tech Mono';
+  drops.forEach((y, i) => {
+    const char = chars[Math.floor(Math.random() * chars.length)];
+    ctx.fillText(char, i * 20, y * 20);
+    if (y * 20 > canvas.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
+  });
+}
+setInterval(drawMatrix, 50);
+
+// ===== NAVIGATION =====
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+  const el = document.getElementById('page-' + page);
+  if (el) el.classList.add('active');
+  const nav = document.getElementById('nav-' + page);
+  if (nav) nav.classList.add('active');
+  currentPage = page;
+  window.scrollTo(0, 0);
+  if (page === 'notes') renderNotes();
+}
+
+// ===== AUTH =====
+function updateAuthUI() {
+  if (currentUser) {
+    document.getElementById('auth-btns').style.display = 'none';
+    const badge = document.getElementById('user-badge');
+    badge.style.display = 'flex';
+    document.getElementById('user-name-display').textContent = currentUser.username || currentUser.name;
+    document.getElementById('user-avatar').textContent = (currentUser.name || currentUser.username || 'U')[0].toUpperCase();
+  } else {
+    document.getElementById('auth-btns').style.display = 'flex';
+    document.getElementById('user-badge').style.display = 'none';
+  }
+}
+
+function doLogin() {
+  const u = document.getElementById('login-user').value.trim();
+  const p = document.getElementById('login-pass').value;
+  const cap = document.getElementById('captcha-check').checked;
+  document.getElementById('login-err').textContent = '';
+  if (!u || !p) { document.getElementById('login-err').textContent = '> ERROR: All fields required.'; return; }
+  if (!cap) { showNotif('Please verify the CAPTCHA checkbox.','error'); return; }
+  const user = users.find(x => (x.email === u || x.username === u) && x.password === btoa(p));
+  if (!user) { document.getElementById('login-err').textContent = '> ACCESS DENIED: Invalid credentials.'; showNotif('Login failed — invalid credentials','error'); return; }
+  currentUser = user;
+  localStorage.setItem('ezt_currentUser', JSON.stringify(user));
+  updateAuthUI();
+  showPopup('✅ ACCESS GRANTED', `Welcome back, ${user.name}! You are now logged into EZONOTOR TIMES.`, 'success');
+  showPage('home');
+}
+
+function doRegister() {
+  const name = document.getElementById('reg-name').value.trim();
+  const email = document.getElementById('reg-email').value.trim();
+  const username = document.getElementById('reg-user').value.trim();
+  const pass = document.getElementById('reg-pass').value;
+  const pass2 = document.getElementById('reg-pass2').value;
+  const cap = document.getElementById('captcha-check2').checked;
+  // Reset errors
+  ['reg-email-err','reg-pass-err','reg-pass2-err'].forEach(id => document.getElementById(id).textContent = '');
+  let valid = true;
+  if (!name || !email || !username || !pass || !pass2) { showNotif('All fields are required','error'); return; }
+  if (!/\S+@\S+\.\S+/.test(email)) { document.getElementById('reg-email-err').textContent = '> Invalid email format'; valid = false; }
+  if (pass.length < 8) { document.getElementById('reg-pass-err').textContent = '> Password must be 8+ characters'; valid = false; }
+  if (pass !== pass2) { document.getElementById('reg-pass2-err').textContent = '> Passwords do not match'; valid = false; }
+  if (!cap) { showNotif('Please verify the CAPTCHA','error'); return; }
+  if (!valid) return;
+  if (users.find(x => x.email === email || x.username === username)) {
+    document.getElementById('reg-email-err').textContent = '> Account already exists';
+    return;
+  }
+  const user = { name, email, username, password: btoa(pass), joined: new Date().toLocaleDateString() };
+  users.push(user);
+  localStorage.setItem('ezt_users', JSON.stringify(users));
+  currentUser = user;
+  localStorage.setItem('ezt_currentUser', JSON.stringify(user));
+  updateAuthUI();
+  showPopup('🎉 ACCOUNT CREATED', `Welcome to Ezonotor Times, ${name}! Your journey into digital intelligence begins now.`, 'success');
+  showPage('home');
+}
+
+function logout() {
+  currentUser = null;
+  localStorage.removeItem('ezt_currentUser');
+  updateAuthUI();
+  showNotif('You have been securely logged out. 🔐');
+  showPage('home');
+}
+
+function showForgot() {
+  showPopup('🔑 PASSWORD RECOVERY', 'Password recovery would send a reset link to your registered email address. For this demo, please register a new account or use your original credentials.', 'info');
+}
+
+function checkStrength(pass) {
+  const fill = document.getElementById('strength-fill');
+  const text = document.getElementById('strength-text');
+  let score = 0;
+  if (pass.length >= 8) score++;
+  if (pass.length >= 12) score++;
+  if (/[A-Z]/.test(pass)) score++;
+  if (/[0-9]/.test(pass)) score++;
+  if (/[^a-zA-Z0-9]/.test(pass)) score++;
+  const levels = ['', 'WEAK','FAIR','GOOD','STRONG','UNBREAKABLE'];
+  const colors = ['','#ff2244','#ff8800','#ffdd00','#00ff88','#00cfff'];
+  const widths = [0,20,40,60,80,100];
+  fill.style.width = widths[score] + '%';
+  fill.style.background = colors[score];
+  text.textContent = score > 0 ? '> Strength: ' + levels[score] : 'Enter a password';
+}
+
+// ===== NOTES =====
+function renderNotes() {
+  const list = document.getElementById('notes-list');
+  list.innerHTML = '';
+  if (!currentUser) { list.innerHTML = '<div style="font-family:Share Tech Mono;font-size:0.72rem;color:var(--dim)">Login to save notes securely.</div>'; return; }
+  const userNotes = notes.filter(n => n.owner === currentUser.email);
+  if (userNotes.length === 0) { list.innerHTML = '<div style="font-family:Share Tech Mono;font-size:0.72rem;color:var(--dim)">No notes yet. Click + NEW NOTE.</div>'; }
+  userNotes.forEach((n, i) => {
+    const div = document.createElement('div');
+    div.className = 'note-item' + (activeNote && activeNote.id === n.id ? ' active' : '');
+    div.innerHTML = `<div class="note-item-title">${n.title || 'Untitled'}</div><div class="note-item-date">${n.date}</div>`;
+    div.onclick = () => loadNote(n);
+    list.appendChild(div);
+  });
+}
+
+function newNote() {
+  if (!currentUser) { showPopup('🔐 LOGIN REQUIRED', 'Please login or register to create and save notes securely.', 'warn'); return; }
+  activeNote = { id: Date.now(), title: '', body: '', date: new Date().toLocaleDateString(), owner: currentUser.email };
+  document.getElementById('note-title-input').value = '';
+  document.getElementById('note-body').value = '';
+  updateNoteCounts();
+}
+
+function loadNote(note) {
+  activeNote = note;
+  document.getElementById('note-title-input').value = note.title;
+  document.getElementById('note-body').value = note.body;
+  updateNoteCounts();
+  renderNotes();
+}
+
+function saveNote() {
+  if (!currentUser) { showPopup('🔐 LOGIN REQUIRED','Login to save notes.','warn'); return; }
+  if (!activeNote) { showNotif('Create a new note first.','warn'); return; }
+  activeNote.title = document.getElementById('note-title-input').value || 'Untitled';
+  activeNote.body = document.getElementById('note-body').value;
+  activeNote.date = new Date().toLocaleDateString();
+  activeNote.owner = currentUser.email;
+  const idx = notes.findIndex(n => n.id === activeNote.id);
+  if (idx >= 0) notes[idx] = activeNote; else notes.push(activeNote);
+  localStorage.setItem('ezt_notes', JSON.stringify(notes));
+  document.getElementById('note-save-status').textContent = 'Saved ✓';
+  showNotif('Note saved successfully! 💾');
+  renderNotes();
+  setTimeout(() => document.getElementById('note-save-status').textContent = 'Saved', 3000);
+}
+
+function deleteNote() {
+  if (!activeNote) return;
+  notes = notes.filter(n => n.id !== activeNote.id);
+  localStorage.setItem('ezt_notes', JSON.stringify(notes));
+  activeNote = null;
+  document.getElementById('note-title-input').value = '';
+  document.getElementById('note-body').value = '';
+  showNotif('Note deleted.','warn');
+  renderNotes();
+}
+
+function updateNoteCounts() {
+  const body = document.getElementById('note-body').value;
+  document.getElementById('note-char-count').textContent = body.length + ' chars';
+  document.getElementById('note-word-count').textContent = (body.trim() ? body.trim().split(/\s+/).length : 0) + ' words';
+  document.getElementById('note-save-status').textContent = 'Unsaved';
+}
+document.getElementById('note-body').addEventListener('input', updateNoteCounts);
+
+function fmtNote(cmd) { showNotif('Format: ' + cmd + ' applied (use markdown in export)'); }
+function insertHeading() { const ta = document.getElementById('note-body'); ta.value += '\n## Heading\n'; updateNoteCounts(); }
+function insertCode() { const ta = document.getElementById('note-body'); ta.value += '\n```\ncode here\n```\n'; updateNoteCounts(); }
+function insertBullet() { const ta = document.getElementById('note-body'); ta.value += '\n• '; updateNoteCounts(); }
+function clearNote() { if (confirm('Clear all note content?')) { document.getElementById('note-body').value = ''; updateNoteCounts(); } }
+
+// ===== STORE =====
+function addToCart(item, price) {
+  cart.push({ item, price });
+  cartCount = cart.length;
+  document.getElementById('cart-count').textContent = cartCount;
+  localStorage.setItem('ezt_cart', JSON.stringify(cart));
+  showNotif(`🛒 "${item}" added to cart!`);
+}
+function viewCart() {
+  if (cart.length === 0) { showPopup('🛒 CART EMPTY','Your cart is empty. Browse our store and add some items!','info'); return; }
+  const items = cart.map(c => `• ${c.item} — ${c.price}`).join('\n');
+  showPopup('🛒 YOUR CART', `${items}\n\nTotal: ${cart.length} item(s)\nProceed to checkout to complete your purchase.`, 'info');
+}
+function switchStoreTab(tab, btn) {
+  document.querySelectorAll('.store-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('store-images').style.display = tab === 'images' ? 'grid' : 'none';
+  document.getElementById('store-music').style.display = tab === 'music' ? 'grid' : 'none';
+}
+
+// ===== MUSIC PLAYER =====
+function togglePlay() {
+  isPlaying = !isPlaying;
+  const btn = document.getElementById('play-btn');
+  const art = document.getElementById('player-art');
+  btn.textContent = isPlaying ? '⏸' : '▶';
+  if (isPlaying) { art.classList.add('playing'); startProgress(); showNotif('▶ ' + tracks[currentTrack].title); }
+  else { art.classList.remove('playing'); stopProgress(); }
+}
+function playTrack(i) {
+  currentTrack = i;
+  updatePlayerInfo();
+  isPlaying = true;
+  document.getElementById('play-btn').textContent = '⏸';
+  document.getElementById('player-art').classList.add('playing');
+  progress = 0;
+  document.getElementById('progress-fill').style.width = '0%';
+  stopProgress();
+  startProgress();
+}
+function updatePlayerInfo() {
+  const t = tracks[currentTrack];
+  document.getElementById('player-track').textContent = t.title + ' — EZT Beats';
+  document.getElementById('player-artist').textContent = 'EZONOTOR TIMES COLLECTION';
+  document.getElementById('time-dur').textContent = t.duration;
+  document.getElementById('player-art').textContent = t.icon;
+}
+function nextTrack() { currentTrack = (currentTrack + 1) % tracks.length; playTrack(currentTrack); }
+function prevTrack() { currentTrack = (currentTrack - 1 + tracks.length) % tracks.length; playTrack(currentTrack); }
+function toggleShuffle() { shuffle = !shuffle; document.getElementById('shuffle-btn').style.color = shuffle ? 'var(--neon)' : ''; showNotif(shuffle ? '🔀 Shuffle ON' : 'Shuffle OFF'); }
+function toggleMute() { isMuted = !isMuted; document.getElementById('vol-icon').textContent = isMuted ? '🔇' : '🔊'; }
+function setVolume(v) { }
+function seekTrack(e) {
+  const bar = e.currentTarget;
+  const rect = bar.getBoundingClientRect();
+  progress = ((e.clientX - rect.left) / rect.width) * tracks[currentTrack].durationS;
+}
+function startProgress() {
+  progressTimer = setInterval(() => {
+    if (!isPlaying) return;
+    progress = Math.min(progress + 1, tracks[currentTrack].durationS);
+    const pct = (progress / tracks[currentTrack].durationS) * 100;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    const m = Math.floor(progress / 60), s = Math.floor(progress % 60);
+    document.getElementById('time-cur').textContent = m + ':' + String(s).padStart(2, '0');
+    if (progress >= tracks[currentTrack].durationS) { nextTrack(); }
+  }, 1000);
+}
+function stopProgress() { clearInterval(progressTimer); }
+
+// ===== GENIUS =====
+const knowledgeBase = {
+  quantum: 'Quantum computing uses quantum bits (qubits) that can exist in superposition — both 0 and 1 simultaneously. This allows quantum computers to solve certain problems exponentially faster than classical computers. Unlike classical bits, qubits leverage quantum phenomena like entanglement and interference.',
+  internet: 'The internet was invented through a series of contributions. ARPANET (1969) was the first network. Tim Berners-Lee invented the World Wide Web in 1989. Vint Cerf and Bob Kahn created TCP/IP protocols — the foundational language of the internet.',
+  dna: 'DNA (Deoxyribonucleic Acid) is the molecule that carries genetic information in all living organisms. It consists of two strands forming a double helix, made of nucleotides containing four bases: Adenine, Thymine, Guanine, and Cytosine. DNA encodes instructions for building and operating every cell in your body.',
+  cybersecurity: 'Cybersecurity is the practice of protecting computers, networks, and data from digital attacks, unauthorized access, and damage. It encompasses network security, application security, information security, encryption, identity management, and incident response. In our connected world, cybersecurity is essential for individuals, businesses, and governments.',
+  polokwane: 'Polokwane (formerly Pietersburg) is the capital city of Limpopo Province, South Africa. It\'s the largest city in Limpopo with a population of around 500,000. Home to the University of Limpopo, Polokwane International Airport, and diverse cultural communities including Seshego township.',
+  seshego: 'Seshego is a township located adjacent to Polokwane, in Limpopo Province, South Africa. It is home to vibrant communities, local businesses, and creative talent. Home of Ezonotor Times creator Ezekiel Thupetsi Mojela!',
+  ezekiel: 'Ezekiel Thupetsi Mojela is the creator of Ezonotor Times, a digital platform from Seshego, Polokwane. He is a digital innovator passionate about cybersecurity, music production, digital art, and mathematics education. His work aims to empower South African youth through technology.',
+  blockchain: 'Blockchain is a distributed ledger technology where data is stored in linked blocks across many computers. Each block contains a cryptographic hash of the previous block, transaction data, and a timestamp. This makes it nearly impossible to alter past data. Bitcoin uses blockchain for cryptocurrency transactions.',
+  ai: 'Artificial Intelligence (AI) refers to computer systems that perform tasks typically requiring human intelligence — like learning, reasoning, problem-solving, and language understanding. Machine learning is a subset of AI where systems learn from data. Deep learning uses neural networks inspired by the human brain.',
+  africa: 'Africa is the world\'s second-largest and second-most populous continent with 54 countries and over 1.4 billion people. Home to incredible biodiversity, ancient civilizations, diverse languages (over 2000!), and rapidly growing technology sectors. South Africa leads in tech innovation on the continent.',
+};
+
+function askGenius() {
+  const q = document.getElementById('genius-input').value.trim().toLowerCase();
+  const out = document.getElementById('genius-output');
+  if (!q) return;
+  out.textContent = '> PROCESSING QUERY...\n> SEARCHING KNOWLEDGE BASE...\n\n';
+  setTimeout(() => {
+    let answer = '';
+    const keys = Object.keys(knowledgeBase);
+    const found = keys.find(k => q.includes(k));
+    if (found) {
+      answer = `> QUERY: "${document.getElementById('genius-input').value}"\n\n${knowledgeBase[found]}\n\n> CONFIDENCE: HIGH | SOURCE: Ezonotor Knowledge Base`;
+    } else if (q.includes('hello') || q.includes('hi')) {
+      answer = `> Hello! I am the GENIUS Engine, powered by Ezonotor Times.\n> Created by Ezekiel Thupetsi Mojela from Seshego, Polokwane.\n> Ask me anything about technology, science, or culture!`;
+    } else if (q.includes('who are you') || q.includes('what are you')) {
+      answer = `> I am GENIUS — the Ezonotor Times Knowledge Engine.\n> Built by Ezekiel Thupetsi Mojela.\n> I can answer questions about: quantum computing, internet, DNA, cybersecurity, Polokwane, Seshego, blockchain, AI, Africa, and more!`;
+    } else {
+      answer = `> QUERY: "${document.getElementById('genius-input').value}"\n\n> This topic isn't in my current knowledge base.\n> Try asking about: quantum computing, internet, DNA, cybersecurity, Polokwane, Seshego, blockchain, AI, Africa, or Ezekiel.\n\n> TIP: Connect to the internet for expanded search capabilities.`;
+    }
+    out.textContent = answer;
+  }, 800);
+}
+
+// ===== MATH WORM =====
+const quizQuestions = [
+  {q:'What is 7 × 8?', a:'56', opts:['48','54','56','63']},
+  {q:'√144 = ?', a:'12', opts:['10','11','12','13']},
+  {q:'2^10 = ?', a:'1024', opts:['512','1024','2048','256']},
+  {q:'What is 15% of 200?', a:'30', opts:['25','30','35','40']},
+  {q:'How many degrees in a triangle?', a:'180', opts:['90','180','270','360']},
+  {q:'Prime numbers below 10:', a:'2,3,5,7', opts:['1,2,3,5','2,3,5,7','2,4,6,8','1,3,5,7']},
+  {q:'What is 1000 ÷ 25?', a:'40', opts:['30','35','40','45']},
+  {q:'(-3) × (-4) = ?', a:'12', opts:['-12','-7','7','12']},
+];
+let quizIdx = 0;
+
+function solveMath() {
+  const expr = document.getElementById('math-input').value.trim();
+  const display = document.getElementById('math-display');
+  const output = document.getElementById('math-output');
+  if (!expr) return;
+  try {
+    let result;
+    const clean = expr.replace(/sqrt\(([^)]+)\)/g, (_, n) => Math.sqrt(eval(n)).toString())
+                       .replace(/\^/g, '**')
+                       .replace(/pi/g, Math.PI.toString())
+                       .replace(/e(?![a-z])/g, Math.E.toString());
+    result = eval(clean);
+    if (typeof result !== 'number' || !isFinite(result)) throw new Error('Invalid');
+    const rounded = Math.round(result * 1e10) / 1e10;
+    display.textContent = expr + ' = ' + rounded;
+    output.textContent = `> COMPUTING: ${expr}\n> RESULT: ${rounded}\n> ${Number.isInteger(rounded) ? 'Integer' : 'Decimal'} · ${rounded > 0 ? 'Positive' : rounded < 0 ? 'Negative' : 'Zero'}\n> COMPUTED BY MATH WORM ✓`;
+    showNotif('🐛 Math Worm: ' + expr + ' = ' + rounded);
+  } catch (e) {
+    display.textContent = 'ERROR';
+    output.textContent = `> ERROR: Could not compute "${expr}"\n> Try: 2+2, sqrt(16), 5^3, 100/4`;
+    showNotif('Invalid expression','error');
+  }
+}
+
+function loadQuiz() {
+  quizIdx = Math.floor(Math.random() * quizQuestions.length);
+  const q = quizQuestions[quizIdx];
+  const area = document.getElementById('quiz-area');
+  document.getElementById('math-display').textContent = q.q;
+  area.innerHTML = q.opts.map(o => `<div class="quiz-option" onclick="checkAnswer(this,'${o}','${q.a}')">${o}</div>`).join('');
+  document.getElementById('math-output').textContent = '> QUIZ MODE ACTIVE\n> Select the correct answer above.';
+}
+
+function checkAnswer(el, chosen, correct) {
+  document.querySelectorAll('.quiz-option').forEach(o => o.style.pointerEvents = 'none');
+  if (chosen === correct) {
+    el.classList.add('correct');
+    document.getElementById('math-output').textContent = '> ✅ CORRECT!\n> ' + correct + ' is right!\n> Great work, Math Worm approved! 🐛';
+    showNotif('✅ Correct answer! Well done!');
+  } else {
+    el.classList.add('wrong');
+    document.querySelectorAll('.quiz-option').forEach(o => { if (o.textContent === correct) o.classList.add('correct'); });
+    document.getElementById('math-output').textContent = '> ❌ INCORRECT\n> Correct answer: ' + correct + '\n> Keep practicing!';
+    showNotif('❌ Wrong! Correct: ' + correct,'error');
+  }
+  setTimeout(loadQuiz, 3000);
+}
+
+function showTimesTable() {
+  const input = document.getElementById('math-input').value.trim();
+  const n = parseInt(input) || 7;
+  let table = `> TIMES TABLE: ${n}\n\n`;
+  for (let i = 1; i <= 12; i++) table += `  ${n} × ${i.toString().padStart(2)} = ${(n * i).toString().padStart(4)}\n`;
+  document.getElementById('math-output').textContent = table;
+  document.getElementById('math-display').textContent = n + ' × ? = 🐛';
+}
+
+// ===== CYBER =====
+function runFakeScan() {
+  showNotif('🔍 Scanning... analyzing vulnerability patterns...','warn');
+  setTimeout(() => {
+    showPopup('🔍 VULNERABILITY ANALYSIS','SCAN COMPLETE — No critical vulnerabilities detected in this environment.\n\n• SQL Injection: PROTECTED\n• XSS: PROTECTED\n• CSRF: PROTECTED\n• Headers: SECURE\n\nRemember: Always run authorized scans only on systems you own or have explicit permission to test.','info');
+  }, 1500);
+}
+
+// ===== POPUP =====
+function showPopup(title, text, type = 'info') {
+  const icons = { info:'ℹ️', success:'✅', warn:'⚠️', error:'🚨' };
+  document.getElementById('popup-icon').textContent = icons[type] || 'ℹ️';
+  document.getElementById('popup-title').textContent = title;
+  document.getElementById('popup-text').textContent = text;
+  document.getElementById('popup-overlay').classList.add('show');
+}
+function closePopup() { document.getElementById('popup-overlay').classList.remove('show'); }
+document.getElementById('popup-overlay').addEventListener('click', e => { if (e.target === e.currentTarget) closePopup(); });
+
+// ===== NOTIFICATIONS =====
+function showNotif(msg, type = 'success') {
+  const container = document.getElementById('notif-container');
+  const n = document.createElement('div');
+  n.className = 'notif' + (type === 'error' ? ' error' : type === 'warn' ? ' warn' : '');
+  n.textContent = msg;
+  container.appendChild(n);
+  setTimeout(() => { if (n.parentNode) n.parentNode.removeChild(n); }, 4000);
+}
+
+// ===== WELCOME POPUP =====
+window.addEventListener('load', () => {
+  updateAuthUI();
+  renderNotes();
+  updatePlayerInfo();
+  document.getElementById('cart-count').textContent = cart.length;
+  setTimeout(() => {
+    showPopup('🌐 WELCOME TO EZONOTOR TIMES', 'Built by Ezekiel Thupetsi Mojela from Seshego, Polokwane.\n\nExplore cybersecurity tools, write secure notes, buy digital art & music, test your genius, and more!\n\nThis site works offline too — try it without internet.', 'info');
+  }, 1500);
+});
+
+// ===== SERVICE WORKER (offline support) =====
+if ('serviceWorker' in navigator) {
+  const swCode = `
+    const CACHE = 'ezonotor-v1';
+    self.addEventListener('install', e => e.waitUntil(caches.open(CACHE).then(c => c.addAll(['/']))));
+    self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(r => r || fetch(e.request).catch(() => new Response('Offline')))));
+  `;
+  const blob = new Blob([swCode], { type: 'application/javascript' });
+  const swUrl = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl).catch(() => {});
+}
+</script>
+</body>
+</html>
